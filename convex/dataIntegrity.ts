@@ -452,6 +452,7 @@ export const repair = internalMutation({
       }
       for (const [, list] of byUser) {
         if (list.length <= 1) continue;
+        // Keep newest rows for one-to-one logical tables and remove stale duplicates.
         list.sort((a, b) => b._creationTime - a._creationTime);
         for (const duplicate of list.slice(1)) {
           await ctx.db.delete(duplicate._id as Parameters<typeof ctx.db.delete>[0]);

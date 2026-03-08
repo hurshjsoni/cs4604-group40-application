@@ -40,6 +40,8 @@ export const createAuthOptions = (
   opts?: { strictEnv?: boolean },
 ) => {
   const strictEnv = opts?.strictEnv ?? false;
+  // In non-strict mode we allow local dev fallbacks.
+  // In strict mode (server runtime), missing env vars fail fast.
   const baseURL = getServerEnv("SITE_URL", process.env.SITE_URL, {
     required: strictEnv,
     fallback: "http://localhost:3000",

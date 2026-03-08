@@ -490,6 +490,8 @@ export const deleteUser = mutation({
     const user = await ctx.db.get(userId);
     if (!user) throw new ConvexError("User not found");
 
+    // Convex does not enforce SQL-style cascading deletes, so this mutation
+    // performs explicit cross-table cleanup to prevent orphaned records.
     const [contactRows, photoRows, studentProfiles, providerProfiles, roommateProfiles, settingsRows] =
       await Promise.all([
         ctx.db.query("contactInfo").withIndex("by_user", (q) => q.eq("userId", userId)).collect(),

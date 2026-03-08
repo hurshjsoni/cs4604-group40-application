@@ -242,6 +242,8 @@ export const upsert = mutation({
     assertReasonableDate(args.moveInDate, "Move-in date");
     assertMaxLength(args.bio, "Bio", 2000);
 
+    // Roommate profile is treated as a logical singleton per user.
+    // Keep latest row and prune historical duplicates created by races.
     const rows = await ctx.db
       .query("roommateProfiles")
       .withIndex("by_user", (q) => q.eq("userId", user._id))

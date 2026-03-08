@@ -398,6 +398,8 @@ export const computeMatches = mutation({
     );
     candidates = candidates.filter((p) => isMutuallyGenderCompatible(myProfile, p));
 
+    // Recompute only smart suggestions for the latest profile state while
+    // preserving accepted links and manual relationship intent.
     // Delete old smart matches that are still pending/declined - preserve accepted connections
     const oldMatches = await ctx.db
       .query("roommateMatches")

@@ -11,6 +11,8 @@ type Ctx = QueryCtx | MutationCtx;
 export async function getAuthedUser(ctx: Ctx) {
   const identity = await ctx.auth.getUserIdentity();
   if (!identity) return null;
+  // Prefer the current token identifier, then fallback to legacy subject mapping
+  // so migrated users remain resolvable without re-seeding.
   const usersByToken = await ctx.db
     .query("users")
     .withIndex("by_token", (q) => q.eq("tokenIdentifier", identity.tokenIdentifier))

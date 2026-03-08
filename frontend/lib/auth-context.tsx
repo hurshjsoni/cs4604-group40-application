@@ -110,6 +110,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!selectedRole || selectedRole === convexUser.role || roleMismatchSignOutRef.current) return;
     roleMismatchSignOutRef.current = true;
     toast.error("Please select the correct role for this account.");
+    // Explicitly terminate the valid auth session when role selection is wrong
+    // so protected routes never load under a mismatched role choice.
     void authClient
       .signOut()
       .finally(() => {

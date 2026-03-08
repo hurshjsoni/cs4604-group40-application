@@ -309,6 +309,8 @@ export const leaveGroup = mutation({
     });
 
     if (membership.role === "admin") {
+      // Ensure group continuity when an admin leaves:
+      // promote an active member, otherwise close the group.
       const remaining = await ctx.db
         .query("groupMembers")
         .withIndex("by_group", (q) => q.eq("groupId", args.groupId))

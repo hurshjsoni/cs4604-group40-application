@@ -152,6 +152,8 @@ export const createOrGetUser = mutation({
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) throw new ConvexError("Not authenticated");
 
+    // First reconcile by auth token identifier (with a legacy subject fallback).
+    // If multiple rows exist, we always treat the oldest row as canonical.
     const tokenUsers = await getUsersByTokenIdentifier(ctx, identity.tokenIdentifier);
     const subjectUsers =
       tokenUsers.length === 0 && identity.subject
@@ -188,7 +190,8 @@ export const createOrGetUser = mutation({
     const isVerified = email.endsWith(".edu");
 
     // Resolve concurrent sign-ins for the same real user by reusing existing
-    // records keyed by normalized email.
+    // records keyed by normalized email. This path intentionally preserves
+    // the existing role and only syncs identity/name/avatar fields.
     const existingByEmail = await getUsersByEmail(ctx, email);
     if (existingByEmail.length > 0) {
       existingByEmail.sort((a, b) => a._creationTime - b._creationTime);

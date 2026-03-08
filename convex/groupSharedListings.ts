@@ -145,6 +145,8 @@ export const vote = mutation({
     const membership = await getMembershipByGroupAndUser(ctx, shared.groupId, authedUser._id);
     if (!membership || membership.status !== "active") throw new ConvexError("Not a member");
 
+    // Enforce one effective vote per user per shared listing by updating
+    // the latest vote instead of creating duplicates.
     const existing = await getLatestVoteBySharedListingAndUser(ctx, args.sharedListingId, authedUser._id);
 
     if (existing) {

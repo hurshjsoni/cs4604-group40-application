@@ -89,6 +89,8 @@ export const refineMatchWithAI = internalAction({
     matchId: v.id("roommateMatches"),
   },
   handler: async (ctx, { matchId }): Promise<void> => {
+    // Optional enhancement only: if AI configuration fails/missing,
+    // core matching results must continue to work unchanged.
     const apiKey = process.env.OPENAI_API_KEY;
     if (!apiKey) return;
 
