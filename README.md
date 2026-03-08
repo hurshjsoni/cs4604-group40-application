@@ -1,56 +1,95 @@
 # A&R Finder
 
-A&R Finder is a full-stack student housing platform built with a Next.js frontend in `frontend/` and Convex + Better Auth backend/auth in `convex/`.
+## Introduction
 
-## Stack
+A&R Finder (Apartment and Roommate Finder) is a database-driven web application designed to help university students find off-campus housing and compatible roommates. The platform addresses a common challenge in student housing: relevant information is typically scattered across social media, group chats, and informal networks, making it difficult to compare options and identify suitable living arrangements. By centralizing housing listings and roommate profiles into a single system, A&R Finder gives students a more organized and reliable approach to the housing search process.
 
-- Next.js App Router + TypeScript
+The application supports three primary user roles: students seeking housing, students seeking roommates, and apartment providers. Students can create profiles, browse apartment listings, and search for potential roommates based on their preferences. Apartment providers can post and manage listings, update availability, and view inquiries from interested students. Administrators oversee the platform and handle content moderation. This role-based structure ensures that each type of user has access to the features most relevant to their needs.
+
+A central component of the system is the roommate matching functionality. Students complete profiles that capture lifestyle preferences such as sleep schedules, cleanliness habits, noise tolerance, budget range, and social tendencies. The system calculates compatibility scores between users based on these factors, helping students identify potential roommates who share similar living expectations. This reduces the guesswork involved in finding a compatible match and helps prevent conflicts that can arise from mismatched expectations.
+
+The platform also supports collaborative housing searches through group functionality. Students can form groups with friends or matched roommates to coordinate their apartment search together. Within these groups, members can share listings, vote on options, and communicate through built-in messaging. This feature reflects how students typically approach housing searches in practice, working together rather than independently.
+
+From a technical standpoint, A&R Finder was built as a full-stack web application using Next.js and React on the frontend, with Convex and TypeScript serving as the backend and database layer. The database schema follows relational design principles with normalized tables for users, profiles, listings, matches, groups, and related entities. The system implements role-based access control, server-side validation, and pagination to support efficient querying as the platform scales. Additional features include saved listings, reporting tools for moderation, and an admin dashboard for platform oversight.
+
+## Demo Login Credentials
+
+These seeded credentials are available for role-based testing:
+
+- **Student**
+  - Email: `group40@user.com`
+  - Password: `User12345!`
+- **Provider**
+  - Email: `group40@provider.com`
+  - Password: `Provider12345!`
+- **Admin**
+  - Email: `group40@admin.com`
+  - Password: `Admin12345!`
+
+> Important: sign-in is role-aware. Users must select the correct role (Student, Provider, or Admin) before signing in.
+
+## Tech Stack
+
+- Next.js (App Router) + React + TypeScript
 - Convex (database + server functions)
 - Better Auth (`@convex-dev/better-auth`)
-- Tailwind CSS + shadcn/ui components
+- Tailwind CSS + shadcn/ui
+
+## Repository Structure
+
+- `frontend/`: Next.js app (UI, pages, client auth context, components)
+- `convex/`: schema, queries, mutations, auth component integration, seed/integrity tooling
+- `docs/database-design.md`: data model and integrity strategy documentation
+- `tests/`: validation and normalization unit tests
 
 ## Prerequisites
 
 - Node.js 20+
 - npm 10+
-- A configured Convex deployment
+- A configured Convex project/deployment
 
-## Environment Setup
+## Environment Configuration
 
-1. Copy `frontend/.env.example` to `frontend/.env.local` for the Next.js app.
-2. Keep the root `.env.local` values aligned if you are also running Convex/backend code locally.
-3. Fill in all required values.
-4. Ensure production secrets are set in your deployment platform and Convex environment.
+There is no committed `.env.example` file in this repository. Configure environment variables directly in your local environment and deployment platforms.
 
-Required variables:
+### Required (runtime)
 
 - `NEXT_PUBLIC_CONVEX_URL`
-- `NEXT_PUBLIC_CONVEX_SITE_URL` (or set `CONVEX_SITE_URL` server-side)
-- `NEXT_PUBLIC_APP_URL` (preferred; `NEXT_PUBLIC_SITE_URL` is accepted as fallback)
+- `CONVEX_SITE_URL` (or `NEXT_PUBLIC_CONVEX_SITE_URL`)
 - `SITE_URL`
 - `BETTER_AUTH_SECRET`
-- `DEFAULT_ADMIN_PASSWORD` (only if using internal `admin.seedDefaultAdmin`)
+
+### Recommended
+
+- `NEXT_PUBLIC_APP_URL` (preferred) or `NEXT_PUBLIC_SITE_URL` (fallback)
+
+### Optional / feature-specific
+
+- `OPENAI_API_KEY` (enables GPT-enhanced roommate matching insights)
+- `DEFAULT_ADMIN_PASSWORD` (only for internal `admin.seedDefaultAdmin`)
+- `CONVEX_DEPLOYMENT` (used for seed safety checks)
 
 ## Local Development
+
+Install dependencies and run the app from the repository root:
 
 ```bash
 npm install
 npm run dev
 ```
 
-App runs at `http://localhost:3000`.
+The app runs at `http://localhost:3000`.
 
-The Next.js app source lives in `frontend/`. Repo-level npm scripts still run from the repository root.
-
-## Quality Gates
+## Quality Checks
 
 ```bash
 npm run lint
 npm run typecheck
+npm run test
 npm run check
 ```
 
-## Production Build
+## Build
 
 ```bash
 npm run build
@@ -62,21 +101,11 @@ If Turbopack is unstable in your environment:
 npm run build:webpack
 ```
 
-## Database Notes
+## Data Model and Operations Notes
 
 - Canonical schema: `convex/schema.ts`
-- Integrity tooling: `convex/dataIntegrity.ts`
-- Data model documentation: `docs/database-design.md`
+- Seed data + demo credential setup: `convex/seed.ts`
+- Integrity auditing/repair: `convex/dataIntegrity.ts`
+- Admin moderation/user tooling: `convex/admin.ts`
 
-For deployment hygiene:
-
-- seed only in non-production deployments
-- review role-gated mutations before release
-- periodically run integrity audit/repair workflows
-- keep seed/admin bootstrap functions internal-only
-
-## Deployment
-
-- Set all environment variables in Vercel/hosting and Convex.
-- Ensure `SITE_URL` and `NEXT_PUBLIC_APP_URL` match your production origin.
-- Use a strong random `BETTER_AUTH_SECRET`.
+Use non-production deployments for seed/reset operations.

@@ -56,6 +56,15 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+function readPendingRole(): UserRole | null {
+  if (typeof window === "undefined") return null;
+  const value = sessionStorage.getItem("pendingRole");
+  if (value === "student" || value === "provider" || value === "admin") {
+    return value;
+  }
+  return null;
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const { isAuthenticated: convexAuthenticated, isLoading: convexLoading } =
     useConvexAuth();
@@ -79,9 +88,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       !creationTriggeredRef.current
     ) {
       creationTriggeredRef.current = true;
-      const storedRole = (typeof window !== "undefined"
-        ? sessionStorage.getItem("pendingRole")
-        : null) as UserRole | null;
+      const storedRole = readPendingRole();
       const requestedRole = pendingRole ?? storedRole ?? "student";
       const role = requestedRole === "provider" ? "provider" : "student";
       if (typeof window !== "undefined") sessionStorage.removeItem("pendingRole");
@@ -94,24 +101,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [convexAuthenticated, convexUser, pendingRole, createOrGetUser]);
 
-  // If user signed in with a different role than their account (e.g. student selected Provider), show toast and keep actual role.
-  const roleMismatchShownRef = useRef(false);
+  // Enforce role-aware sign-in: valid credentials are not enough if the selected role is wrong.
+  const roleMismatchSignOutRef = useRef(false);
   useEffect(() => {
-    if (!convexUser || roleMismatchShownRef.current) return;
-    const storedRole = (typeof window !== "undefined"
-      ? sessionStorage.getItem("pendingRole")
-      : null) as UserRole | null;
+    if (!convexUser) return;
+    const storedRole = readPendingRole();
     const selectedRole = pendingRole ?? storedRole;
-    if (!selectedRole || selectedRole === convexUser.role) return;
-    roleMismatchShownRef.current = true;
-    const actual =
-      convexUser.role === "student"
-        ? "Student"
-        : convexUser.role === "provider"
-        ? "Provider"
-        : "Admin";
-    toast.error(`You're registered as a ${actual}. Please sign in with the correct account type.`);
-    if (typeof window !== "undefined") sessionStorage.setItem("pendingRole", convexUser.role);
+    if (!selectedRole || selectedRole === convexUser.role || roleMismatchSignOutRef.current) return;
+    roleMismatchSignOutRef.current = true;
+    toast.error("Please select the correct role for this account.");
+    void authClient
+      .signOut()
+      .finally(() => {
+        setPendingRole(null);
+        if (typeof window !== "undefined") sessionStorage.removeItem("pendingRole");
+        roleMismatchSignOutRef.current = false;
+      });
   }, [convexUser, pendingRole]);
 
   const user: UserCompat | null = convexUser
@@ -135,13 +140,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     convexLoading ||
     (convexAuthenticated && convexUser === undefined);
 
-  const isAuthenticated = convexAuthenticated && !!convexUser;
+  const selectedRole = pendingRole ?? readPendingRole();
+  const hasRoleMismatch = !!convexUser && !!selectedRole && selectedRole !== convexUser.role;
+  const isAuthenticated = convexAuthenticated && !!convexUser && !hasRoleMismatch;
 
   const signIn = useCallback(() => {
     // No-op: sign-in is handled directly via authClient in the UI
   }, []);
 
   const signOut = useCallback(async () => {
+    setPendingRole(null);
+    if (typeof window !== "undefined") sessionStorage.removeItem("pendingRole");
     await authClient.signOut();
   }, []);
 
@@ -153,10 +162,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const setRole = useCallback(
     (newRole: UserRole) => {
-      const safeRole = newRole === "provider" ? "provider" : "student";
-      setPendingRole(safeRole);
+      setPendingRole(newRole);
       if (typeof window !== "undefined") {
-        sessionStorage.setItem("pendingRole", safeRole);
+        sessionStorage.setItem("pendingRole", newRole);
       }
     },
     [],

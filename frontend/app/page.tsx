@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { GraduationCap, Building2, Eye, EyeOff, Loader2, Check } from "lucide-react";
+import { GraduationCap, Building2, Shield, Eye, EyeOff, Loader2, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/auth-context";
 import { LogoIcon } from "./components/icons";
@@ -134,6 +134,12 @@ export default function AuthPage() {
                 label="Provider"
                 selected={role === "provider"}
                 onClick={() => setRole("provider")}
+              />
+              <RoleButton
+                icon={Shield}
+                label="Admin"
+                selected={role === "admin"}
+                onClick={() => setRole("admin")}
               />
             </div>
           </div>
@@ -276,6 +282,10 @@ function SignUpForm({ role }: { role: UserRole }) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !email || !password || !confirm) return;
+    if (role === "admin") {
+      toast.error("Admin accounts cannot be created from sign up.");
+      return;
+    }
     if (password !== confirm) {
       toast.error("Passwords do not match.");
       return;

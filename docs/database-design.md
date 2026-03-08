@@ -122,8 +122,9 @@ This provides a repeatable integrity workflow for grading/demo and production hy
 
 - All write endpoints require authenticated identity.
 - Sensitive write paths are role-gated (`student` vs `provider`).
-- Moderation-only report status operations are internal-only.
+- Moderation report status updates are admin-only via role-gated mutations (`admin.setReportStatus`).
 - Contact visibility is enforced via `userSettings.showContactInfo` and ownership rules.
+- Authentication is role-aware at sign-in time: users must select the correct role (student/provider/admin) to continue.
 
 ## 10. Known Tradeoffs
 
