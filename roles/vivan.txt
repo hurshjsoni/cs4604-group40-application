@@ -1,0 +1,9 @@
+Vivan Verma — Role
+
+1. Share backend ownership with Anthony: Convex functions, fixes, and reviews so nothing blocks the team.
+2. Co-develop frontend pieces with Hursh: shared components, pages, and consistent UX patterns.
+3. Plan and run testing: happy paths, role-based flows, and regression checks before milestones.
+4. Verify listings, saved items, roommate matching, and group features against the schema and requirements.
+5. Help document test cases and known issues for demos and phase submissions.
+6. Jump on integration bugs that span UI and server (auth, loading states, permissions).
+7. Keep communication tight with Anthony on backend tasks and with Hursh on UI priorities.

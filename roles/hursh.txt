@@ -1,0 +1,11 @@
+Hursh Soni — Role
+
+1. Help shape the data model and Convex tables so the frontend and backend stay in sync.
+2. Build and polish UI: pages, components, layout, and flows for students, providers, and admins.
+3. Implement and fix frontend hooks to Convex (queries, mutations, auth-aware views).
+4. Support backend work: Convex functions, validation, and small schema tweaks when the UI needs them.
+5. Write and maintain integration-style checks so main user paths work after changes.
+6. Keep semester documentation updated: setup, structure, and how to run and test the app.
+7. Coordinate with Vivan on frontend/backend handoffs and with Daniel on schema or data questions.
+8. Propose and help ship smarter roommate matching, including optional AI-assisted explanations or scoring where it fits the product.
+9. Steer what gets built each phase: scope, priorities, and demo-ready cuts so the team stays aligned without scope creep.

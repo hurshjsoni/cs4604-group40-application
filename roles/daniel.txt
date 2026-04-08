@@ -1,0 +1,9 @@
+Daniel Carrillo — Role 
+
+1. Help design and refine the database: tables, relationships, and constraints so the model stays consistent as features grow.
+2. Turn project requirements into clear technical specs the team can build against.
+3. Propose and document extra features that improve the product while keeping scalability and data integrity in mind.
+4. Review backend data flows: queries, validators, and rules so stored data stays correct and safe.
+5. Run and help plan tests (manual and automated) so listings, profiles, matches, and groups behave the same end to end.
+6. Keep the data model docs and ERD aligned with `convex/schema.ts` when the schema changes.
+7. Pair with teammates on tricky data or edge cases (orphan records, permissions, moderation) as needed.

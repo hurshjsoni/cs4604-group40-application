@@ -1,0 +1,9 @@
+Anthony Osei — Role
+
+1. Own core backend work in Convex: queries, mutations, and business logic for listings, profiles, and groups.
+2. Draft and update phase deliverables and technical writeups the course asks for.
+3. Help design and implement database tables, indexes, and relationships with the rest of the team.
+4. Wire and maintain auth-related flows with Better Auth so roles (student, provider, admin) are enforced.
+5. Implement server-side validation and error handling so bad input does not corrupt data.
+6. Support admin and moderation features (reports, user tools) on the backend where needed.
+7. Work closely with Vivan on API shape, testing, and splitting backend tasks evenly.

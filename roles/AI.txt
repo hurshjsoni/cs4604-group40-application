@@ -1,0 +1,10 @@
+Generative AI — Role
+
+1. Help implement and refine frontend features and components when the team asks.
+2. Generate realistic seed data for major tables (users, profiles, listings, groups, etc.) with believable personas.
+3. Help debug errors and trace issues, especially in Convex/backend code and types.
+4. Explain how Convex documents and functions map to classic ERD and relational-style design for reports.
+5. Suggest architecture options (folders, patterns, separation of concerns) that fit this stack.
+6. Clarify project scope and brainstorm feature ideas that match course goals.
+7. Tidy task lists, draft or clean documentation, and help with ERD and database-design wording.
+8. Give quick feedback on designs, code, and docs before human review.
